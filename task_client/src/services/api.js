@@ -106,6 +106,24 @@ export const tasksAPI = {
   },
 };
 
+// Users API
+export const usersAPI = {
+  getAll: async () => {
+    const response = await api.get('/users');
+    return response.data;
+  },
+
+  getStats: async () => {
+    const response = await api.get('/users/stats');
+    return response.data;
+  },
+
+  getCurrentUser: async () => {
+    const response = await api.get('/users/me');
+    return response.data;
+  },
+};
+
 // Reports API
 export const reportsAPI = {
   getDailySummary: async (projectId, options = {}) => {
