@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { tasksAPI } from '../services/api';
+import { useState, useEffect } from 'react';
+import { tasksAPI, usersAPI } from '../services/api';
 
 const CreateTaskModal = ({ projectId, onClose, onTaskCreated }) => {
   const [formData, setFormData] = useState({
@@ -8,9 +8,29 @@ const CreateTaskModal = ({ projectId, onClose, onTaskCreated }) => {
     priority: 'medium',
     status: 'todo',
     due_date: '',
+    assigned_to: '',
   });
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        // For now, we'll use hardcoded users since there's no /users endpoint
+        // In a real app, you'd fetch from usersAPI.getAll()
+        setUsers([
+          { id: 1, name: 'Alice Johnson', email: 'alice@example.com' },
+          { id: 2, name: 'Bob Smith', email: 'bob@example.com' },
+          { id: 3, name: 'Carol Williams', email: 'carol@example.com' },
+        ]);
+      } catch (err) {
+        console.error('Failed to fetch users:', err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +45,7 @@ const CreateTaskModal = ({ projectId, onClose, onTaskCreated }) => {
         priority: formData.priority,
         status: formData.status,
         due_date: formData.due_date || null,
+        assigned_to: formData.assigned_to ? parseInt(formData.assigned_to) : null,
       };
 
       const newTask = await tasksAPI.create(taskData);
@@ -134,6 +155,25 @@ const CreateTaskModal = ({ projectId, onClose, onTaskCreated }) => {
               onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
               className="input-field"
             />
+          </div>
+
+          <div>
+            <label htmlFor="assigned_to" className="block text-sm font-medium text-gray-700 mb-1">
+              Assign To
+            </label>
+            <select
+              id="assigned_to"
+              value={formData.assigned_to}
+              onChange={(e) => setFormData({ ...formData, assigned_to: e.target.value })}
+              className="input-field"
+            >
+              <option value="">Unassigned</option>
+              {users.map((user) => (
+                <option key={user.id} value={user.id}>
+                  {user.name} ({user.email})
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className="flex space-x-3 pt-4">

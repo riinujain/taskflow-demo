@@ -1,8 +1,24 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { tasksAPI } from '../services/api';
 
 const TaskList = ({ tasks, onTaskUpdated, onTaskDeleted }) => {
   const [updatingId, setUpdatingId] = useState(null);
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    // Hardcoded users for now - in production, fetch from API
+    setUsers([
+      { id: 1, name: 'Alice Johnson', email: 'alice@example.com' },
+      { id: 2, name: 'Bob Smith', email: 'bob@example.com' },
+      { id: 3, name: 'Carol Williams', email: 'carol@example.com' },
+    ]);
+  }, []);
+
+  const getUserName = (userId) => {
+    if (!userId) return 'Unassigned';
+    const user = users.find((u) => u.id === userId);
+    return user ? user.name : `User ${userId}`;
+  };
 
   const getPriorityColor = (priority) => {
     const colors = {
@@ -31,6 +47,20 @@ const TaskList = ({ tasks, onTaskUpdated, onTaskDeleted }) => {
       onTaskUpdated(updatedTask);
     } catch (error) {
       console.error('Failed to update task:', error);
+    } finally {
+      setUpdatingId(null);
+    }
+  };
+
+  const handleAssigneeChange = async (task, newAssigneeId) => {
+    try {
+      setUpdatingId(task.id);
+      const updatedTask = await tasksAPI.update(task.id, {
+        assigned_to: newAssigneeId ? parseInt(newAssigneeId) : null,
+      });
+      onTaskUpdated(updatedTask);
+    } catch (error) {
+      console.error('Failed to update task assignee:', error);
     } finally {
       setUpdatingId(null);
     }
@@ -78,7 +108,7 @@ const TaskList = ({ tasks, onTaskUpdated, onTaskDeleted }) => {
           </div>
 
           <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-gray-100">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center space-x-4 flex-wrap gap-2">
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-gray-500">Status:</span>
                 <select
@@ -91,6 +121,23 @@ const TaskList = ({ tasks, onTaskUpdated, onTaskDeleted }) => {
                   <option value="in_progress">In Progress</option>
                   <option value="done">Done</option>
                   <option value="blocked">Blocked</option>
+                </select>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <span className="text-sm text-gray-500">Assigned to:</span>
+                <select
+                  value={task.assigned_to || ''}
+                  onChange={(e) => handleAssigneeChange(task, e.target.value)}
+                  disabled={updatingId === task.id}
+                  className="text-sm font-medium px-3 py-1 rounded-lg border border-gray-300 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none text-gray-700 disabled:opacity-50 bg-white"
+                >
+                  <option value="">Unassigned</option>
+                  {users.map((user) => (
+                    <option key={user.id} value={user.id}>
+                      {user.name}
+                    </option>
+                  ))}
                 </select>
               </div>
 
