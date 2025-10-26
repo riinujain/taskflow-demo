@@ -4,6 +4,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import ProjectDetail from './pages/ProjectDetail';
+import DailySummary from './pages/DailySummary';
 
 // Protected Route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -50,6 +51,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <ProjectDetail />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/daily-summary"
+        element={
+          <ProtectedRoute>
+            <DailySummary />
           </ProtectedRoute>
         }
       />

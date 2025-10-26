@@ -24,13 +24,14 @@ def seed_database():
         project_service = ProjectService(db)
         task_service = TaskService(db)
 
-        # Create 3 users
+        # Create 4 users
         logger.info("Creating users...")
         users = []
         user_data = [
             ("alice@example.com", "password123", "Alice Johnson"),
             ("bob@example.com", "password123", "Bob Smith"),
             ("carol@example.com", "password123", "Carol Williams"),
+            ("josep@example.com", "password123", "Josep"),
         ]
 
         for email, password, name in user_data:

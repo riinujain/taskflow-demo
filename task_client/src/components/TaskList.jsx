@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
-import { tasksAPI } from '../services/api';
+import { tasksAPI, usersAPI } from '../services/api';
 
 const TaskList = ({ tasks, onTaskUpdated, onTaskDeleted }) => {
   const [updatingId, setUpdatingId] = useState(null);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
-    // Hardcoded users for now - in production, fetch from API
-    setUsers([
-      { id: 1, name: 'Alice Johnson', email: 'alice@example.com' },
-      { id: 2, name: 'Bob Smith', email: 'bob@example.com' },
-      { id: 3, name: 'Carol Williams', email: 'carol@example.com' },
-    ]);
+    const fetchUsers = async () => {
+      try {
+        const userData = await usersAPI.getAll();
+        setUsers(userData);
+      } catch (err) {
+        console.error('Failed to fetch users:', err);
+      }
+    };
+
+    fetchUsers();
   }, []);
 
   const getUserName = (userId) => {

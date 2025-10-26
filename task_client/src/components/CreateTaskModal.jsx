@@ -17,13 +17,8 @@ const CreateTaskModal = ({ projectId, onClose, onTaskCreated }) => {
   useEffect(() => {
     const fetchUsers = async () => {
       try {
-        // For now, we'll use hardcoded users since there's no /users endpoint
-        // In a real app, you'd fetch from usersAPI.getAll()
-        setUsers([
-          { id: 1, name: 'Alice Johnson', email: 'alice@example.com' },
-          { id: 2, name: 'Bob Smith', email: 'bob@example.com' },
-          { id: 3, name: 'Carol Williams', email: 'carol@example.com' },
-        ]);
+        const userData = await usersAPI.getAll();
+        setUsers(userData);
       } catch (err) {
         console.error('Failed to fetch users:', err);
       }

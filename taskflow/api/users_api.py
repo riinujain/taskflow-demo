@@ -189,3 +189,22 @@ def get_user_stats(
     user_service = UserService(db)
     stats = user_service.getUserStats(current_user.id)  # type: ignore - camelCase method
     return stats
+
+
+@user_router.get("", response_model=list[UserResponse])
+def get_all_users(
+    db: Annotated[Session, Depends(get_db_session)],
+    current_user: Annotated[object, Depends(get_current_user)],
+):
+    """Get all active users for task assignment."""
+    user_service = UserService(db)
+    users = user_service.get_active_users()
+    return [
+        UserResponse(
+            id=user.id,
+            email=user.email,
+            name=user.name,
+            is_active=user.is_active,
+        )
+        for user in users
+    ]
