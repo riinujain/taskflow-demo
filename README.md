@@ -64,7 +64,54 @@ The API will be available at `http://localhost:8000`
 
 API documentation: `http://localhost:8000/docs`
 
+### Configurable Ports
+
+Both the backend and frontend servers support configurable ports via environment variables.
+
+#### Backend Port Configuration
+
+The backend server port can be configured using the `PORT` environment variable in the root `.env` file:
+
+```bash
+# .env
+PORT=8000  # Default backend port
+```
+
+To run the backend on a custom port:
+
+```bash
+# Option 1: Set in .env file
+PORT=8080
+
+# Option 2: Set environment variable directly
+PORT=8080 python -m taskflow.main
+
+# Option 3: Set environment variable with uvicorn
+PORT=8080 uvicorn taskflow.main:app --reload
+```
+
+#### Frontend Port Configuration
+
+The frontend dev server port can be configured using the `VITE_PORT` environment variable in `task_client/.env`:
+
+```bash
+# task_client/.env
+VITE_PORT=3000  # Default frontend port
+VITE_API_URL=http://localhost:8000  # Backend API URL
+```
+
+To run the frontend on a custom port:
+
+```bash
+cd task_client
+VITE_PORT=3001 npm run dev
+```
+
+**Important:** If you change the backend port, make sure to update `VITE_API_URL` in `task_client/.env` to match the new backend port.
+
 ## Example Usage
+
+**Note:** The following examples assume the backend is running on the default port `8000`. If you've configured a different port, replace `8000` with your configured port number.
 
 ### Register a User
 
