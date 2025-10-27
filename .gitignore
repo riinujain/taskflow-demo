@@ -47,7 +47,7 @@ logs/
 /tmp/
 
 # Environment variables
-.env
+# Note: .env files are tracked in this demo project for ease of setup
 .env.local
 .env.*.local
 

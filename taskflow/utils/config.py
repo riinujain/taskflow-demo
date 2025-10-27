@@ -28,6 +28,9 @@ class Settings(BaseSettings):
     DEFAULT_PAGE_SIZE: int = 50
     MAX_PAGE_SIZE: int = 100
 
+    # Server Ports
+    PORT: int = 8000
+
     class Config:
         env_file = ".env"
         case_sensitive = True
